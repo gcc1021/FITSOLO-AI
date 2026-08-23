@@ -1,0 +1,93 @@
+{
+  "id": "case-02",
+  "tag": "增肌",
+  "title": "24 岁程序员 · 10 周增肌",
+  "demoNote": "模拟脱敏样例（合成数据，非真实学员），用于案例回放 Demo；上线前替换为真实学员的授权脱敏数据。",
+  "meta": {
+    "gender": "男",
+    "age": 24,
+    "durationWeeks": 10,
+    "trainingDaysPerWeek": 4,
+    "equipment": "健身房",
+    "scenario": "久坐程序员，体型偏瘦，希望系统增肌，无伤病"
+  },
+  "baseline": {
+    "startDate": "2026-04-06",
+    "heightCm": 178,
+    "weightKg": 68.0,
+    "bodyFatPct": 16.0,
+    "waistCm": 80,
+    "bmi": 21.5,
+    "goal": "增肌",
+    "targetWeightKg": 73,
+    "strength": { "squatKg": 60, "benchKg": 45, "deadliftKg": 70 }
+  },
+  "plan": {
+    "version": 1,
+    "strategy": "渐进超负荷 + 蛋白质充足 + 负重训练",
+    "why": "BMI 21.5 偏瘦，以增肌为目标；采用推/拉/腿分化保证每周容量，蛋白质按 1.8-2.0g/kg 供给，训练后蛋白粉补齐缺口，主项每周渐进加重。",
+    "stages": [
+      {
+        "stage": 1,
+        "weeks": "1-4",
+        "goal": "基础力量期：掌握动作，建立容量",
+        "training": {
+          "frequency": "每周 3-4 次",
+          "split": ["推日：卧推/肩推/三头", "拉日：引体/划船/二头", "腿日：深蹲/硬拉/腿举"],
+          "weighted": "主项 3-4 组 × 5-8 次，组间休息 2-3 分钟"
+        },
+        "nutrition": {
+          "dailyCalories": 2800,
+          "proteinG": 135,
+          "supplement": "训练后蛋白粉 1.5 勺（约 35g 蛋白）",
+          "carbG": 320,
+          "sleepH": "≥7.5"
+        }
+      },
+      {
+        "stage": 2,
+        "weeks": "5-10",
+        "goal": "渐进超负荷期：每周加重，突破力量",
+        "training": {
+          "frequency": "每周 4 次",
+          "split": ["推/拉/腿/上肢 四分化"],
+          "weighted": "主项每周 +2.5kg；第 7 周安排 deload 减量 50%"
+        },
+        "nutrition": {
+          "dailyCalories": 2900,
+          "proteinG": 145,
+          "supplement": "训练后蛋白粉 1.5 勺",
+          "carbG": 350,
+          "sleepH": "≥7.5"
+        }
+      }
+    ],
+    "riskNotes": ["加重以动作标准为前提，不牺牲姿势", "增肌期允许体重小幅上升，关注体脂不过度上涨"]
+  },
+  "process": {
+    "completion": "36/40 次训练（90.0%）",
+    "weeks": [
+      { "week": 1, "weightKg": 68.4, "bodyFatPct": 16.0, "completion": "3/4", "squatKg": 60, "coachNote": "动作学习期" },
+      { "week": 2, "weightKg": 68.9, "bodyFatPct": 15.9, "completion": "4/4", "squatKg": 62.5, "coachNote": "执行良好" },
+      { "week": 3, "weightKg": 69.2, "bodyFatPct": 15.9, "completion": "3/4", "squatKg": 62.5, "coachNote": "加班漏 1 次，已补" },
+      { "week": 4, "weightKg": 69.6, "bodyFatPct": 15.8, "completion": "4/4", "squatKg": 65, "coachNote": "容量达标" },
+      { "week": 5, "weightKg": 70.1, "bodyFatPct": 15.7, "completion": "4/4", "squatKg": 67.5, "coachNote": "进入强化期" },
+      { "week": 6, "weightKg": 70.4, "bodyFatPct": 15.6, "completion": "3/4", "squatKg": 67.5, "coachNote": "睡眠略差，Coach 提醒作息" },
+      { "week": 7, "weightKg": 70.8, "bodyFatPct": 15.5, "completion": "4/4", "squatKg": 72.5, "coachNote": "deload 周减量 50%" },
+      { "week": 8, "weightKg": 71.3, "bodyFatPct": 15.4, "completion": "4/4", "squatKg": 75, "coachNote": "恢复后继续加重" },
+      { "week": 9, "weightKg": 71.9, "bodyFatPct": 15.3, "completion": "3/4", "squatKg": 80, "coachNote": "状态回升" },
+      { "week": 10, "weightKg": 72.6, "bodyFatPct": 15.2, "completion": "4/4", "squatKg": 85, "coachNote": "收官：三大项全面突破" }
+    ]
+  },
+  "result": {
+    "endDate": "2026-06-14",
+    "weightKg": 72.6,
+    "weightChangeKg": 4.6,
+    "bodyFatPct": 15.2,
+    "bodyFatChangePp": -0.8,
+    "muscleGainKg": 2.8,
+    "strength": { "squatKg": 85, "benchKg": 60, "deadliftKg": 95 },
+    "summary": "10 周体重 +4.6kg、体脂率基本持平（16.0%→15.2%）、估算肌肉量 +2.8kg；深蹲 60→85kg、卧推 45→60kg、硬拉 70→95kg；训练完成率 90%。"
+  },
+  "narrative": "24 岁的程序员小 B，从 68kg 的偏瘦体型开始增肌：以『蛋白粉 + 负重渐进超负荷』为核心，第 7 周安排 deload 后力量继续突破，10 周深蹲从 60kg 涨到 85kg，体重 +4.6kg 且体脂没明显上涨。"
+}

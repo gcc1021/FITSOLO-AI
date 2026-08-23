@@ -1,0 +1,93 @@
+{
+  "id": "case-01",
+  "tag": "减脂",
+  "title": "28 岁上班族 · 8 周减脂",
+  "demoNote": "模拟脱敏样例（合成数据，非真实学员），用于案例回放 Demo；上线前替换为真实学员的授权脱敏数据。",
+  "meta": {
+    "gender": "女",
+    "age": 28,
+    "durationWeeks": 8,
+    "trainingDaysPerWeek": 4,
+    "equipment": "健身房",
+    "scenario": "久坐上班族，此前基本无规律运动，无伤病"
+  },
+  "baseline": {
+    "startDate": "2026-03-02",
+    "heightCm": 165,
+    "weightKg": 72.0,
+    "bodyFatPct": 32.0,
+    "waistCm": 82,
+    "hipCm": 98,
+    "bmi": 26.4,
+    "goal": "减脂",
+    "targetWeightKg": 65
+  },
+  "plan": {
+    "version": 1,
+    "strategy": "热量缺口 + 力量训练保肌 + 代餐降低执行难度",
+    "why": "BMI 26.4、体脂 32%，以减脂为目标；每日制造 300-500 kcal 缺口，每周 4 练，用代餐奶昔降低早餐执行难度，训练后蛋白粉保肌。",
+    "stages": [
+      {
+        "stage": 1,
+        "weeks": "1-4",
+        "goal": "适应期：建立训练习惯，制造热量缺口",
+        "training": {
+          "frequency": "每周 4 次",
+          "strength": ["深蹲 3×12", "俯卧撑 3×10", "杠铃划船 3×12", "臀桥 3×15"],
+          "cardio": "快走/椭圆机 30 分钟 × 3 次/周",
+          "weighted": "自重为主，第 3 周起深蹲手持 5kg 哑铃"
+        },
+        "nutrition": {
+          "dailyCalories": 1700,
+          "proteinG": 100,
+          "mealReplacement": "早餐代餐奶昔 1 份；训练后蛋白粉 1 勺",
+          "waterL": 2.0,
+          "sleepH": "≥7"
+        }
+      },
+      {
+        "stage": 2,
+        "weeks": "5-8",
+        "goal": "强化期：提升强度，突破平台期",
+        "training": {
+          "frequency": "每周 4 次",
+          "strength": ["深蹲（负重 5kg）4×10", "俯卧撑 4×10", "杠铃划船 4×12", "臀桥 4×15"],
+          "cardio": "快走/椭圆机 40 分钟 × 4 次/周",
+          "weighted": "深蹲 5kg 哑铃/壶铃"
+        },
+        "nutrition": {
+          "dailyCalories": 1650,
+          "proteinG": 110,
+          "mealReplacement": "早餐代餐奶昔 1 份；训练后蛋白粉 1 勺",
+          "waterL": 2.0,
+          "sleepH": "≥7"
+        }
+      }
+    ],
+    "riskNotes": ["若出现头晕/心悸请停止训练并就医", "代餐仅作部分替代，不替代正餐全部营养"]
+  },
+  "process": {
+    "completion": "49/56 次打卡（87.5%）",
+    "weeks": [
+      { "week": 1, "avgWeightKg": 71.4, "bodyFatPct": 31.6, "completion": "6/7", "coachNote": "适应期，动作以学会为主" },
+      { "week": 2, "avgWeightKg": 70.5, "bodyFatPct": 31.0, "completion": "7/7", "coachNote": "执行良好，保持" },
+      { "week": 3, "avgWeightKg": 69.6, "bodyFatPct": 30.2, "completion": "6/7", "coachNote": "体重稳定下降" },
+      { "week": 4, "avgWeightKg": 68.9, "bodyFatPct": 29.4, "completion": "5/7", "coachNote": "出差漏卡 2 天，Coach 主动关心并简化任务" },
+      { "week": 5, "avgWeightKg": 68.4, "bodyFatPct": 29.0, "completion": "6/7", "coachNote": "正常推进" },
+      { "week": 6, "avgWeightKg": 68.3, "bodyFatPct": 28.9, "completion": "6/7", "coachNote": "平台期：Coach 调整热量 -100kcal、增加 1 次有氧", "adjustment": "R12 平台期应对" },
+      { "week": 7, "avgWeightKg": 67.2, "bodyFatPct": 28.0, "completion": "7/7", "coachNote": "调整后体重重新下降" },
+      { "week": 8, "avgWeightKg": 66.1, "bodyFatPct": 27.1, "completion": "6/7", "coachNote": "收官周，完成度高" }
+    ]
+  },
+  "result": {
+    "endDate": "2026-04-26",
+    "weightKg": 66.1,
+    "weightChangeKg": -5.9,
+    "bodyFatPct": 27.1,
+    "bodyFatChangePp": -4.9,
+    "waistCm": 74,
+    "waistChangeCm": -8,
+    "summary": "8 周减重 5.9kg、体脂率下降 4.9 个百分点、腰围减少 8cm；完成率 87.5%。"
+  },
+  "narrative": "28 岁的久坐上班族小 A，从几乎不运动到每周 4 练：第 1-4 周用『力量 + 代餐 + 有氧』快速适应；第 6 周遇到平台期，Coach 只做了一个小调整（热量 -100、加一次有氧），体重重新开始下降。"
+}
