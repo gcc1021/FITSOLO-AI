@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>做方案 — FITSOLO 智能私教</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c8f542'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%230a0e14' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<header class="hero" style="padding: 56px 0 40px;">
+  <div class="container">
+    <span class="hero-badge">① PLANNER · 做方案</span>
+    <h1 style="font-size: clamp(28px, 4vw, 42px);">先体检，再开方</h1>
+    <p class="lead">填写身体参数与期望目标，AI 为你生成个性化方案（减脂 / 塑形 / 瘦身 / 增肌），并解释每一条「为什么」。</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 10px;">
+  <div class="container">
+    <form id="planForm" class="card">
+      <fieldset class="fieldset">
+        <legend>基本信息</legend>
+        <div class="form-grid">
+          <div class="field">
+            <label>性别</label>
+            <div class="radio-pills">
+              <label><input type="radio" name="gender" value="男" checked><span>男</span></label>
+              <label><input type="radio" name="gender" value="女"><span>女</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>年龄</label>
+            <input type="number" name="age" id="age" value="28" min="12" max="80">
+          </div>
+          <div class="field">
+            <label>身高 (cm)</label>
+            <input type="number" name="height" id="height" value="175" min="120" max="220" step="0.5">
+          </div>
+          <div class="field">
+            <label>体重 (kg)</label>
+            <input type="number" name="weight" id="weight" value="70" min="30" max="200" step="0.1">
+          </div>
+          <div class="field">
+            <label>体脂率 %（选填，体脂秤可测）</label>
+            <input type="number" name="bodyFat" id="bodyFat" min="5" max="60" step="0.1" placeholder="如 28.5">
+          </div>
+          <div class="field">
+            <label>腰围 cm（选填）</label>
+            <input type="number" name="waist" id="waist" min="40" max="160" step="0.5" placeholder="如 82">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend>目标与安排</legend>
+        <div class="form-grid">
+          <div class="field">
+            <label>目标</label>
+            <div class="radio-pills">
+              <label><input type="radio" name="goal" value="减脂" checked><span>减脂</span></label>
+              <label><input type="radio" name="goal" value="瘦身"><span>瘦身</span></label>
+              <label><input type="radio" name="goal" value="塑形"><span>塑形</span></label>
+              <label><input type="radio" name="goal" value="增肌"><span>增肌</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>期望周期</label>
+            <select name="durationWeeks" id="durationWeeks">
+              <option value="4">4 周</option>
+              <option value="6">6 周</option>
+              <option value="8" selected>8 周</option>
+              <option value="10">10 周</option>
+              <option value="12">12 周</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>每周可训练天数</label>
+            <select name="trainingDays" id="trainingDays">
+              <option value="2">2 天</option>
+              <option value="3" selected>3 天</option>
+              <option value="4">4 天</option>
+              <option value="5">5 天</option>
+              <option value="6">6 天</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>训练场地</label>
+            <div class="radio-pills">
+              <label><input type="radio" name="equipment" value="健身房" checked><span>健身房</span></label>
+              <label><input type="radio" name="equipment" value="居家"><span>居家</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>营养代餐 / 补剂</label>
+            <div class="radio-pills">
+              <label><input type="radio" name="mealReplacement" value="蛋白粉" checked><span>蛋白粉</span></label>
+              <label><input type="radio" name="mealReplacement" value="代餐奶昔"><span>代餐奶昔</span></label>
+              <label><input type="radio" name="mealReplacement" value="不用补剂"><span>不用补剂</span></label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend>备注（选填）</legend>
+        <div class="field">
+          <label>伤病 / 健康状况备注</label>
+          <textarea name="notes" id="notes" placeholder="如：膝盖旧伤 / 腰椎不适 / 高血压 / 孕期……有则 AI 会替换高风险动作并提示就医"></textarea>
+          <span class="hint">涉及疾病、孕期等情况，AI 只给安全提示，不提供医疗建议。</span>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn-primary btn-block" id="generateBtn">生成个性化方案</button>
+      <p class="hint center" style="margin-top: 10px;">同一输入 → 同一方案（规则引擎，可复现）。本页数据仅保存在你的浏览器本地。</p>
+    </form>
+
+    <div id="result" class="result-panel" style="display:none;"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="agents/knowledge.js"></script>
+<script src="agents/planner-core.js"></script>
+<script src="agents/checker-core.js"></script>
+<script src="agents/coach-core.js"></script>
+<script src="js/store.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/planner.js"></script>
+</body>
+</html>

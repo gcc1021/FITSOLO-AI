@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能指导 — FITSOLO 智能私教</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c8f542'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%230a0e14' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<header class="hero" style="padding: 56px 0 40px;">
+  <div class="container">
+    <span class="hero-badge">③ COACH · 智能指导</span>
+    <h1 style="font-size: clamp(28px, 4vw, 42px);">随时调整，不让你白练</h1>
+    <p class="lead">基于你的打卡数据，Coach 检测平台期 / 疲劳 / 漏卡并给出调整；也可以直接问任何训练、饮食问题。</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 10px;">
+  <div class="container">
+    <div class="card" id="contextCard" style="margin-bottom:18px;"></div>
+    <div class="card">
+      <div class="chips" id="chips"></div>
+      <div class="chat" id="chat"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="问教练：比如「今天加班没练怎么办？」" autocomplete="off">
+        <button class="btn btn-primary" id="sendBtn">发送</button>
+      </div>
+      <p class="hint small muted" style="margin-top:10px;">演示版为规则引擎（离线可用）；接入大模型后回答会更灵活。涉及疼痛/疾病等健康问题，请及时就医，教练不提供医疗诊断。</p>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="agents/knowledge.js"></script>
+<script src="agents/planner-core.js"></script>
+<script src="agents/checker-core.js"></script>
+<script src="agents/coach-core.js"></script>
+<script src="js/store.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/coach.js"></script>
+</body>
+</html>
