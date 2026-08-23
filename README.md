@@ -95,6 +95,14 @@ node docs/tools/agent-test.js
    git branch -M main
    git push -u origin main
    ```
+> 如果推送时报 `! [rejected] ... fetch first`（说明远端已有初始提交，比如 GitHub 自动生成的 README）：
+> ```bash
+> git pull origin main --allow-unrelated-histories --no-rebase
+> # 若 README.md 冲突：保留我们的完整 README
+> git add README.md
+> git commit -m "merge: 整合 GitHub 初始提交"
+> git push -u origin main
+> ```
 4. 开启 GitHub Pages（Settings → Pages → 选择 `main` 分支 + `/docs` 或根目录），即可得到公开访问链接；也可以把 `web/` 单独部署到 Vercel。
 
 > ⚠️ 绝不要把 API Key / 学员真实数据提交进仓库。本仓库所有案例均为**模拟脱敏样例**。
@@ -102,3 +110,4 @@ node docs/tools/agent-test.js
 ## 合规提示
 
 涉及用户身体数据（敏感个人信息），须遵循《个人信息保护法》：最小化收集、加密存储、单独同意、可导出可删除。详见方案书第 8 章。
+
