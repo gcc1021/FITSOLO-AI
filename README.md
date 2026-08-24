@@ -105,7 +105,7 @@ node docs/tools/agent-test.js
 > ```
 4. 开启 GitHub Pages（Settings → Pages → 选择 `main` 分支 + `/docs` 或根目录），即可得到公开访问链接；也可以把 `web/` 单独部署到 Vercel。
 
-> ⚠️ 绝不要把 API Key / 学员真实数据提交进仓库。本仓库所有案例均为**模拟脱敏样例**。
+> ⚠️本仓库所有案例均为**模拟脱敏样例**。
 
 ## 合规提示
 
