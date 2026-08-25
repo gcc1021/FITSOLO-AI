@@ -1,127 +1,226 @@
 (function () {
   'use strict';
 
+  var OAUTH_ENDPOINTS = window.FITSOLO_OAUTH_ENDPOINTS || {
+    WeChat: '/oauth2/authorize/wechat',
+    QQ: '/oauth2/authorize/qq'
+  };
+
   var body = document.body;
-  var enterButton = document.getElementById('enterButton');
   var landingScreen = document.getElementById('landingScreen');
-  var signupScreen = document.getElementById('signupScreen');
+  var authScreen = document.getElementById('authScreen');
+  var enterButton = document.getElementById('enterButton');
+  var backButton = document.getElementById('backButton');
+  var brandBackButton = document.getElementById('brandBackButton');
   var form = document.getElementById('authForm');
   var modeSwitch = document.getElementById('modeSwitch');
+  var codePanel = document.getElementById('codeLoginPanel');
+  var passwordPanel = document.getElementById('passwordLoginPanel');
+  var codeTelephone = document.getElementById('codeTelephone');
+  var verificationCode = document.getElementById('verificationCode');
+  var getCodeButton = document.getElementById('getCodeButton');
+  var account = document.getElementById('account');
+  var password = document.getElementById('password');
+  var agreement = document.getElementById('agreement');
   var submitButton = document.getElementById('submitButton');
   var primaryActionText = document.getElementById('primaryActionText');
   var message = document.getElementById('formMessage');
-  var telephone = document.getElementById('telephone');
-  var password = document.getElementById('password');
-  var fullName = document.getElementById('fullName');
-  var confirmPassword = document.getElementById('confirmPassword');
-  var isLogin = false;
+  var mode = 'code';
+  var countdownTimer = null;
 
-  function enterSite() {
-    signupScreen.removeAttribute('inert');
-    enterButton.setAttribute('aria-expanded', 'true');
-    body.classList.add('has-entered');
+  function focusWithoutJump(input) {
     window.setTimeout(function () {
-      landingScreen.setAttribute('aria-hidden', 'true');
-      fullName.focus({ preventScroll: true });
-    }, 850);
+      input.focus({ preventScroll: true });
+    }, 420);
   }
 
-  function setMode(loginMode) {
-    isLogin = loginMode;
-    body.classList.toggle('login-mode', isLogin);
-    document.getElementById('formEyebrow').textContent = isLogin ? 'WELCOME BACK' : 'START YOUR JOURNEY';
-    document.getElementById('formTitle').innerHTML = isLogin ? 'Log in to<br>FITSOLO.' : 'Create your<br>account.';
-    document.getElementById('formIntro').textContent = isLogin
-      ? 'Your plan, progress and next workout are waiting for you.'
-      : 'A stronger routine starts with a plan built around you.';
-    document.getElementById('actionDescription').textContent = isLogin
-      ? 'Continue where you left off and keep your momentum moving.'
-      : 'Join FITSOLO and turn your goals into a routine that lasts.';
-    primaryActionText.textContent = isLogin ? 'Log In' : 'Sign Up';
-    document.getElementById('switchPrompt').textContent = isLogin ? 'New to FITSOLO?' : 'Already have an account?';
-    modeSwitch.textContent = isLogin ? 'Sign up' : 'Log in';
+  function enterAuth() {
+    authScreen.removeAttribute('inert');
+    landingScreen.removeAttribute('aria-hidden');
+    enterButton.setAttribute('aria-expanded', 'true');
+    body.classList.remove('is-returning');
+    body.classList.add('has-entered');
 
-    fullName.required = !isLogin;
-    confirmPassword.required = !isLogin;
-    password.autocomplete = isLogin ? 'current-password' : 'new-password';
-    document.querySelectorAll('.social-label').forEach(function (label) {
-      var provider = label.closest('.social-button').dataset.provider;
-      label.textContent = (isLogin ? 'Log In' : 'Sign Up') + ' with ' + provider;
-    });
+    window.setTimeout(function () {
+      landingScreen.setAttribute('aria-hidden', 'true');
+      focusWithoutJump(mode === 'code' ? codeTelephone : account);
+    }, 820);
+  }
 
-    form.reset();
-    clearValidation();
-    telephone.focus();
+  function returnToLanding() {
+    if (!body.classList.contains('has-entered')) return;
+
+    landingScreen.removeAttribute('aria-hidden');
+    body.classList.add('is-returning');
+    body.classList.remove('has-entered');
+    enterButton.setAttribute('aria-expanded', 'false');
+    enterButton.focus({ preventScroll: true });
+
+    window.setTimeout(function () {
+      authScreen.setAttribute('inert', '');
+      body.classList.remove('is-returning');
+    }, 850);
   }
 
   function clearValidation() {
     message.textContent = '';
     message.classList.remove('success');
-    [fullName, telephone, password, confirmPassword].forEach(function (input) {
+    [codeTelephone, verificationCode, account, password].forEach(function (input) {
       input.removeAttribute('aria-invalid');
     });
+    agreement.closest('.agreement-row').classList.remove('has-error');
   }
 
-  function showError(input, text) {
-    input.setAttribute('aria-invalid', 'true');
+  function showError(target, text) {
     message.textContent = text;
-    input.focus();
+    message.classList.remove('success');
+
+    if (target === agreement) {
+      target.closest('.agreement-row').classList.add('has-error');
+    } else {
+      target.setAttribute('aria-invalid', 'true');
+    }
+    target.focus();
   }
 
-  enterButton.addEventListener('click', enterSite);
+  function isValidPhone(value) {
+    return /^1[3-9]\d{9}$/.test(value.trim());
+  }
+
+  function setMode(nextMode) {
+    if (mode === nextMode) return;
+    mode = nextMode;
+    var passwordMode = mode === 'password';
+
+    body.classList.toggle('password-mode', passwordMode);
+    codePanel.classList.toggle('is-active', !passwordMode);
+    passwordPanel.classList.toggle('is-active', passwordMode);
+    codePanel.toggleAttribute('inert', passwordMode);
+    passwordPanel.toggleAttribute('inert', !passwordMode);
+    codePanel.setAttribute('aria-hidden', String(passwordMode));
+    passwordPanel.setAttribute('aria-hidden', String(!passwordMode));
+    modeSwitch.setAttribute('aria-pressed', String(passwordMode));
+
+    document.getElementById('loginModeTitle').textContent = passwordMode ? '账号密码登录' : '手机号验证码登录';
+    document.getElementById('loginModeDescription').textContent = passwordMode
+      ? '使用手机号或 FITSOLO 账号与密码登录。'
+      : '无需记住密码，验证手机号即可安全登录。';
+    document.getElementById('switchPrompt').textContent = passwordMode ? '忘记密码也没关系' : '也可以使用密码登录';
+    modeSwitch.textContent = passwordMode ? '手机号验证码登录' : '账号密码登录';
+
+    clearValidation();
+    focusWithoutJump(passwordMode ? account : codeTelephone);
+  }
+
+  function startCountdown() {
+    var seconds = 60;
+    getCodeButton.disabled = true;
+    getCodeButton.textContent = seconds + 's 后重试';
+
+    countdownTimer = window.setInterval(function () {
+      seconds -= 1;
+      getCodeButton.textContent = seconds + 's 后重试';
+
+      if (seconds <= 0) {
+        window.clearInterval(countdownTimer);
+        countdownTimer = null;
+        getCodeButton.disabled = false;
+        getCodeButton.textContent = '重新获取';
+      }
+    }, 1000);
+  }
+
+  function finishLogin(authMode) {
+    message.textContent = '验证通过，正在进入 FITSOLO…';
+    message.classList.add('success');
+    submitButton.disabled = true;
+    primaryActionText.textContent = '正在登录…';
+
+    try {
+      sessionStorage.setItem('fitsoloAuthMode', authMode);
+    } catch (error) {
+      // Browser storage is optional; never persist passwords or verification codes.
+    }
+
+    window.setTimeout(function () {
+      window.location.href = 'home.html';
+    }, 650);
+  }
+
+  enterButton.addEventListener('click', enterAuth);
+  backButton.addEventListener('click', returnToLanding);
+  brandBackButton.addEventListener('click', returnToLanding);
 
   modeSwitch.addEventListener('click', function () {
-    setMode(!isLogin);
+    setMode(mode === 'code' ? 'password' : 'code');
   });
 
   form.addEventListener('input', clearValidation);
+  agreement.addEventListener('change', clearValidation);
+
+  getCodeButton.addEventListener('click', function () {
+    clearValidation();
+    if (!isValidPhone(codeTelephone.value)) {
+      showError(codeTelephone, '请输入有效的 11 位手机号。');
+      return;
+    }
+
+    // 接入短信服务时，在这里调用 POST /api/auth/sms-code。
+    startCountdown();
+    message.textContent = '验证码已发送，请注意查收。演示环境可输入任意 6 位数字。';
+    message.classList.add('success');
+    verificationCode.focus();
+  });
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     clearValidation();
 
-    if (!isLogin && !fullName.value.trim()) {
-      showError(fullName, 'Please enter your full name.');
+    if (!agreement.checked) {
+      showError(agreement, '请先阅读并同意《用户协议》与《隐私政策》。');
       return;
     }
-    if (!telephone.value.trim()) {
-      showError(telephone, 'Please enter your telephone number.');
+
+    if (mode === 'code') {
+      if (!isValidPhone(codeTelephone.value)) {
+        showError(codeTelephone, '请输入有效的 11 位手机号。');
+        return;
+      }
+      if (!/^\d{6}$/.test(verificationCode.value.trim())) {
+        showError(verificationCode, '请输入 6 位数字验证码。');
+        return;
+      }
+      finishLogin('sms-code');
+      return;
+    }
+
+    if (!account.value.trim()) {
+      showError(account, '请输入手机号或账号。');
       return;
     }
     if (password.value.length < 8) {
-      showError(password, 'Password must contain at least 8 characters.');
+      showError(password, '密码至少需要 8 个字符。');
       return;
     }
-    if (!isLogin && password.value !== confirmPassword.value) {
-      showError(confirmPassword, 'The passwords do not match.');
-      return;
-    }
-
-    message.textContent = isLogin
-      ? 'Welcome back. Taking you to FITSOLO…'
-      : 'Account details look good. Taking you to FITSOLO…';
-    message.classList.add('success');
-
-    submitButton.disabled = true;
-    primaryActionText.textContent = isLogin ? 'Logging In…' : 'Creating Account…';
-
-    try {
-      sessionStorage.setItem('fitsoloAuthMode', isLogin ? 'login' : 'signup');
-      sessionStorage.setItem('fitsoloDisplayName', fullName.value.trim());
-    } catch (error) {
-      // The page can continue even when browser storage is unavailable.
-    }
-
-    window.setTimeout(function () {
-      window.location.href = 'home.html';
-    }, 700);
+    finishLogin('password');
   });
 
   document.querySelectorAll('.social-button').forEach(function (button) {
     button.addEventListener('click', function () {
       clearValidation();
-      message.textContent = button.dataset.provider + ' authentication is ready to be connected.';
-      message.classList.add('success');
+      if (!agreement.checked) {
+        showError(agreement, '使用快捷登录前，请先同意《用户协议》与《隐私政策》。');
+        return;
+      }
+
+      var provider = button.dataset.provider;
+      var endpoint = OAUTH_ENDPOINTS[provider] || button.dataset.oauthPath;
+      var callbackUrl = window.location.origin + '/oauth-callback.html';
+      window.location.assign(endpoint + '?redirect_uri=' + encodeURIComponent(callbackUrl));
     });
+  });
+
+  window.addEventListener('pagehide', function () {
+    if (countdownTimer) window.clearInterval(countdownTimer);
   });
 })();

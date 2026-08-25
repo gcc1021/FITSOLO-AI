@@ -4,92 +4,123 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0c1417">
-  <title>FITSOLO — Your personal fitness journey</title>
-  <meta name="description" content="FITSOLO — a fitness experience designed around you.">
+  <title>FITSOLO — 登录你的专属健身计划</title>
+  <meta name="description" content="登录 FITSOLO，继续你的专属训练计划与智能健身旅程。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23d7ff45'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%23101716' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
   <main class="auth-experience">
-    <section class="signup-screen" id="signupScreen" aria-labelledby="formTitle" inert>
+    <section class="auth-screen" id="authScreen" aria-labelledby="authTitle" inert>
       <div class="background-credit">Mountain image via Unsplash</div>
 
       <article class="glass-card">
         <header class="brand-row">
-          <a class="brand" href="index.html" aria-label="FITSOLO home">
+          <button class="brand brand-button" id="brandBackButton" type="button" aria-label="返回 FITSOLO 引导页">
             <span class="brand-mark">F</span>
             <span>FITSOLO</span>
-          </a>
+          </button>
           <span class="brand-note">YOUR PACE · YOUR PLAN</span>
         </header>
 
         <div class="card-body">
-          <section class="form-panel">
-            <p class="eyebrow" id="formEyebrow">START YOUR JOURNEY</p>
-            <h1 id="formTitle">Create your<br>account.</h1>
-            <p class="intro" id="formIntro">A stronger routine starts with a plan built around you.</p>
+          <section class="welcome-panel" aria-label="FITSOLO 会员体验介绍">
+            <div>
+              <p class="eyebrow">MEMBER ACCESS</p>
+              <h1 id="authTitle">Welcome<br>back.</h1>
+              <p class="intro">你的计划、进度和下一次训练都已准备好。安全登录，继续保持节奏。</p>
+            </div>
 
-            <form id="authForm" novalidate>
-              <div class="field optional-signup-field">
-                <label for="fullName">Full Name</label>
-                <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="Your full name">
-              </div>
-
-              <div class="field">
-                <label for="telephone">Telephone</label>
-                <input id="telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Your telephone number" required>
-              </div>
-
-              <div class="field">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
-              </div>
-
-              <div class="field optional-signup-field">
-                <label for="confirmPassword">Confirm Password</label>
-                <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Enter your password again">
-              </div>
-
-              <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
-            </form>
+            <ol class="journey-steps" aria-label="登录流程">
+              <li class="is-active"><span>01</span><strong>验证身份</strong></li>
+              <li><span>02</span><strong>进入计划</strong></li>
+              <li><span>03</span><strong>继续训练</strong></li>
+            </ol>
           </section>
 
-          <aside class="action-panel">
-            <div class="action-copy">
-              <p class="step-label">01 / ACCOUNT</p>
-              <p id="actionDescription">Join FITSOLO and turn your goals into a routine that lasts.</p>
+          <section class="login-panel">
+            <div class="login-heading">
+              <p class="step-label">01 / SIGN IN</p>
+              <h2 id="loginModeTitle">手机号验证码登录</h2>
+              <p id="loginModeDescription">无需记住密码，验证手机号即可安全登录。</p>
             </div>
 
-            <button class="primary-action" id="submitButton" type="submit" form="authForm">
-              <span id="primaryActionText">Sign Up</span>
-              <span aria-hidden="true">↗</span>
-            </button>
+            <form id="authForm" novalidate>
+              <div class="auth-mode-stack" id="authModeStack">
+                <div class="mode-panel is-active" id="codeLoginPanel" data-mode="code">
+                  <div class="field">
+                    <label for="codeTelephone">手机号</label>
+                    <input id="codeTelephone" name="codeTelephone" type="tel" autocomplete="tel" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="verificationCode">验证码</label>
+                    <div class="code-input-row">
+                      <input id="verificationCode" name="verificationCode" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6" placeholder="请输入 6 位验证码" required>
+                      <button class="code-button" id="getCodeButton" type="button">获取验证码</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mode-panel" id="passwordLoginPanel" data-mode="password" aria-hidden="true" inert>
+                  <div class="field">
+                    <label for="account">手机号 / 账号</label>
+                    <input id="account" name="account" type="text" autocomplete="username" placeholder="请输入手机号或账号">
+                  </div>
+
+                  <div class="field">
+                    <label for="password">密码</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="请输入密码">
+                  </div>
+                </div>
+              </div>
+
+              <label class="agreement-row" for="agreement">
+                <input id="agreement" name="agreement" type="checkbox">
+                <span class="custom-check" aria-hidden="true"></span>
+                <span>我已阅读并同意<a href="legal.html#terms" target="_blank" rel="noopener">《用户协议》</a>与<a href="legal.html#privacy" target="_blank" rel="noopener">《隐私政策》</a></span>
+              </label>
+
+              <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+
+              <div class="flow-actions">
+                <button class="back-action" id="backButton" type="button">
+                  <span aria-hidden="true">←</span>
+                  <span>返回上一步</span>
+                </button>
+                <button class="primary-action" id="submitButton" type="submit">
+                  <span id="primaryActionText">登录并进入</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </form>
 
             <p class="account-switch">
-              <span id="switchPrompt">Already have an account?</span>
-              <button class="text-button" id="modeSwitch" type="button">Log in</button>
+              <span id="switchPrompt">也可以使用密码登录</span>
+              <button class="text-button" id="modeSwitch" type="button" aria-controls="authModeStack" aria-pressed="false">账号密码登录</button>
             </p>
 
-            <div class="divider"><span>Or</span></div>
+            <div class="divider"><span>其他登录方式</span></div>
 
             <div class="social-actions">
-              <button class="social-button" type="button" data-provider="QQ">
-                <span class="social-icon qq-icon" aria-hidden="true">Q</span>
-                <span class="social-label">Sign Up with QQ</span>
-              </button>
-              <button class="social-button" type="button" data-provider="WeChat">
+              <button class="social-button" type="button" data-provider="WeChat" data-oauth-path="/oauth2/authorize/wechat" aria-label="使用微信登录">
                 <span class="social-icon wechat-icon" aria-hidden="true">微</span>
-                <span class="social-label">Sign Up with WeChat</span>
+                <span>微信登录</span>
+              </button>
+              <button class="social-button" type="button" data-provider="QQ" data-oauth-path="/oauth2/authorize/qq" aria-label="使用 QQ 登录">
+                <span class="social-icon qq-icon" aria-hidden="true">Q</span>
+                <span>QQ 登录</span>
               </button>
             </div>
-          </aside>
+          </section>
         </div>
       </article>
     </section>
 
     <section class="landing-screen" id="landingScreen" aria-labelledby="landingTitle">
       <div class="landing-grain" aria-hidden="true"></div>
-      <a class="landing-brand" href="index.html" aria-label="FITSOLO home">
+      <a class="landing-brand" href="index.html" aria-label="FITSOLO 首页">
         <span class="brand-mark brand-mark-light">F</span>
         <span>FITSOLO</span>
       </a>
@@ -97,9 +128,9 @@
       <div class="landing-content">
         <p class="landing-kicker">PERSONAL FITNESS, REIMAGINED</p>
         <h2 id="landingTitle">FITSOLO that<br>works for <em>you!</em></h2>
-        <button class="enter-button" id="enterButton" type="button" aria-controls="signupScreen" aria-expanded="false">
+        <button class="enter-button" id="enterButton" type="button" aria-controls="authScreen" aria-expanded="false">
           <span>Enter</span>
-          <span class="enter-arrow" aria-hidden="true">↗</span>
+          <span class="enter-arrow" aria-hidden="true">→</span>
         </button>
       </div>
 
