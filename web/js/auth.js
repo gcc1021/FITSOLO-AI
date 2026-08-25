@@ -24,6 +24,7 @@
   var agreement = document.getElementById('agreement');
   var submitButton = document.getElementById('submitButton');
   var primaryActionText = document.getElementById('primaryActionText');
+  var guestLoginButton = document.getElementById('guestLoginButton');
   var message = document.getElementById('formMessage');
   var mode = 'code';
   var countdownTimer = null;
@@ -203,6 +204,16 @@
       return;
     }
     finishLogin('password');
+  });
+
+  guestLoginButton.addEventListener('click', function () {
+    // 游客访问不校验表单，也不请求接口，直接进入网站首页。
+    try {
+      sessionStorage.setItem('fitsoloAuthMode', 'guest');
+    } catch (error) {
+      // 浏览器禁用存储时仍允许游客进入。
+    }
+    window.location.assign('home.html');
   });
 
   document.querySelectorAll('.social-button').forEach(function (button) {

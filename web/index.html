@@ -17,7 +17,7 @@
   <meta name="twitter:image" content="https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site/og.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23d7ff45'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%23101716' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://images.unsplash.com">
-  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/auth.css?v=0.5.0">
 </head>
 <body>
   <main class="auth-experience">
@@ -68,6 +68,8 @@
                     <div class="code-input-row">
                       <input id="verificationCode" name="verificationCode" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6" placeholder="请输入 6 位验证码" required>
                       <button class="code-button" id="getCodeButton" type="button">获取验证码</button>
+                      <!-- 游客入口与验证码操作并排，避免占用表单底部空间 -->
+                      <button class="guest-code-button" id="guestLoginButton" type="button">游客访问</button>
                     </div>
                   </div>
                 </div>
@@ -128,6 +130,7 @@
     </section>
 
     <section class="landing-screen" id="landingScreen" aria-labelledby="landingTitle">
+      <canvas class="landing-rings" id="landingRings" aria-hidden="true"></canvas>
       <div class="landing-grain" aria-hidden="true"></div>
       <a class="landing-brand" href="index.html" aria-label="FITSOLO 首页">
         <span class="brand-mark brand-mark-light">F</span>
@@ -147,6 +150,7 @@
     </section>
   </main>
 
-  <script src="js/auth.js"></script>
+  <script src="js/landing-rings.js?v=0.5.0"></script>
+  <script src="js/auth.js?v=0.5.0"></script>
 </body>
 </html>

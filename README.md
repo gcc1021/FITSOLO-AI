@@ -12,6 +12,7 @@
 - ✅ Phase 1：网站原型（本仓库）——官网 + 3 智能体 Demo + 案例回放
 - ✅ Phase 2：入口体验优化——全屏引导页 + 毛玻璃注册/登录页 + 原官网功能串联
 - ✅ Phase 3：登录流程优化——双向返回 + 验证码/密码登录 + 协议校验 + OAuth 预留
+- ✅ Phase 4：入口动态化——Canvas 呼吸圆环 + Enter 距离感应 + 游客快捷访问
 
 详细版本改动见 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -40,7 +41,7 @@
 
 **方式二（推荐，体验完整）**：双击 `start-web.bat`，然后浏览器访问 <http://localhost:8000>。
 
-网站访问流程：`index.html` 引导页 ↔ 验证码/密码登录界面 → `home.html` 官网主页 → 各智能体功能页。
+网站访问流程：`index.html` Canvas 动态引导页 ↔ 验证码/密码登录界面 → `home.html` 官网主页 → 各智能体功能页。游客也可从验证码操作行直接进入主页。
 
 命令行方式：
 
@@ -70,6 +71,7 @@ fitsolo-ai/
 │  ├─ css/styles.css         # 原官网与智能体功能页样式
 │  ├─ css/auth.css           # 引导页与注册/登录页样式
 │  ├─ js/auth.js             # 页面切换、模式切换与表单校验
+│  ├─ js/landing-rings.js    # Canvas 圆环动画与 Enter 距离感应
 │  ├─ index.html             # 全屏引导页 + 验证码/密码登录入口
 │  ├─ home.html              # 官网主页（故事五幕 + 三智能体 + 案例）
 │  ├─ legal.html             # 用户协议与隐私政策占位页
