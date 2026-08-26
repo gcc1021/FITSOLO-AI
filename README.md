@@ -13,6 +13,7 @@
 - ✅ Phase 2：入口体验优化——全屏引导页 + 毛玻璃注册/登录页 + 原官网功能串联
 - ✅ Phase 3：登录流程优化——双向返回 + 验证码/密码登录 + 协议校验 + OAuth 预留
 - ✅ Phase 4：入口动态化——Canvas 呼吸圆环 + Enter 距离感应 + 游客快捷访问
+- ✅ Phase 5：全站智能体——可拖动透明水滴 Agent + DeepSeek SSE 流式对话
 
 详细版本改动见 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -52,6 +53,25 @@ python -m http.server 8000 --directory web
 
 > 数据保存在浏览器 localStorage（仅本机），不上传任何服务器。
 
+### 启用 DeepSeek 智能体
+
+复制 `.env.example` 为 `.env.local`，只在本机填写新的 DeepSeek API Key：
+
+```env
+DEEPSEEK_API_KEY=your_key_here
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-flash
+PORT=4176
+```
+
+然后运行：
+
+```bash
+npm start
+```
+
+浏览器访问 <http://127.0.0.1:4176/>。真实 `.env.local` 已被 Git 忽略，禁止将 API Key 写入前端文件或提交到版本库。
+
 ## 目录结构
 
 ```
@@ -72,12 +92,16 @@ fitsolo-ai/
 │  ├─ css/auth.css           # 引导页与注册/登录页样式
 │  ├─ js/auth.js             # 页面切换、模式切换与表单校验
 │  ├─ js/landing-rings.js    # Canvas 圆环动画与 Enter 距离感应
+│  ├─ js/agent-widget.js     # 全局水滴 Agent、拖动与 SSE 聊天逻辑
+│  ├─ css/agent-widget.css   # 水滴、涟漪和聊天面板样式
 │  ├─ index.html             # 全屏引导页 + 验证码/密码登录入口
 │  ├─ home.html              # 官网主页（故事五幕 + 三智能体 + 案例）
 │  ├─ legal.html             # 用户协议与隐私政策占位页
 │  ├─ oauth-callback.html    # 第三方 OAuth 回调占位页
-│  ├─ planner.html / checker.html / coach.html / replay.html
-└─ start-web.bat            # 一键启动本地预览
+│  └─ planner.html / checker.html / coach.html / replay.html
+├─ start-web.bat            # 一键启动静态预览
+├─ server.mjs               # 静态网站 + DeepSeek SSE 后端代理
+└─ .env.example             # 无密钥环境变量模板
 ```
 
 ## 技术说明

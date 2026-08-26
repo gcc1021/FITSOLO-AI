@@ -1,0 +1,445 @@
+/*
+ * FITSOLO 全局悬浮智能体
+ * 修改水滴尺寸：调整 --agent-drop-size
+ * 修改水滴颜色：调整 --agent-drop-color / --agent-drop-color-2
+ * 修改组件位置：调整 --agent-edge-x / --agent-edge-y
+ */
+.fitsolo-agent {
+  --agent-drop-size: 72px;
+  --agent-drop-color: 215, 255, 69;
+  --agent-drop-color-2: 58, 214, 176;
+  --agent-edge-x: 24px;
+  --agent-edge-y: 24px;
+  --agent-ink: #101716;
+  --agent-paper: #f4f2ea;
+  --agent-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  z-index: 120;
+  right: max(var(--agent-edge-x), env(safe-area-inset-right));
+  bottom: max(var(--agent-edge-y), env(safe-area-inset-bottom));
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--agent-ink);
+  isolation: isolate;
+}
+
+.fitsolo-agent *,
+.fitsolo-agent *::before,
+.fitsolo-agent *::after {
+  box-sizing: border-box;
+}
+
+.agent-launcher-wrap {
+  position: relative;
+  display: grid;
+  width: var(--agent-drop-size);
+  height: var(--agent-drop-size);
+  place-items: center;
+}
+
+.agent-droplet {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  width: var(--agent-drop-size);
+  height: var(--agent-drop-size);
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 54% 46% 57% 43% / 46% 55% 45% 54%;
+  background:
+    radial-gradient(circle at 29% 23%, rgba(255, 255, 255, 0.94) 0 6%, rgba(255, 255, 255, 0.32) 8%, transparent 23%),
+    radial-gradient(circle at 67% 72%, rgba(var(--agent-drop-color-2), 0.28), transparent 48%),
+    linear-gradient(145deg, rgba(var(--agent-drop-color), 0.62), rgba(var(--agent-drop-color-2), 0.38));
+  box-shadow:
+    inset 8px 9px 18px rgba(255, 255, 255, 0.42),
+    inset -10px -12px 20px rgba(3, 17, 15, 0.13),
+    0 12px 30px rgba(2, 15, 14, 0.2),
+    0 0 28px rgba(var(--agent-drop-color), 0.09);
+  backdrop-filter: blur(7px) saturate(1.15);
+  -webkit-backdrop-filter: blur(7px) saturate(1.15);
+  color: #0d1815;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  transform: translateZ(0);
+  transform-origin: 50% 58%;
+  animation: agentLiquidBreathe 5.2s ease-in-out infinite;
+  will-change: transform, border-radius;
+  transition: filter 220ms ease, box-shadow 220ms ease;
+}
+
+.fitsolo-agent.is-dragging {
+  transition: none;
+  will-change: transform;
+}
+
+.fitsolo-agent.is-dragging .agent-droplet {
+  cursor: grabbing;
+  animation-play-state: paused;
+  filter: brightness(1.08) saturate(0.9);
+}
+
+.agent-droplet::before {
+  content: "";
+  position: absolute;
+  width: 29%;
+  height: 17%;
+  top: 16%;
+  left: 19%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  filter: blur(1px);
+  transform: rotate(-28deg);
+}
+
+.agent-droplet::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.agent-droplet:hover,
+.agent-droplet:focus-visible {
+  filter: saturate(1.1) brightness(1.06);
+  box-shadow:
+    inset 8px 9px 18px rgba(255, 255, 255, 0.5),
+    inset -10px -12px 20px rgba(3, 17, 15, 0.12),
+    0 15px 38px rgba(2, 15, 14, 0.24),
+    0 0 38px rgba(var(--agent-drop-color), 0.13);
+  animation-name: agentLiquidBreathe, agentTouchWobble;
+  animation-duration: 5.2s, 720ms;
+  animation-iteration-count: infinite, 1;
+}
+
+.agent-droplet:focus-visible {
+  outline: 3px solid rgba(var(--agent-drop-color), 0.5);
+  outline-offset: 4px;
+}
+
+.agent-core-icon {
+  position: relative;
+  z-index: 2;
+  width: 25px;
+  height: 21px;
+  opacity: 0.88;
+}
+
+.agent-core-icon path,
+.agent-core-icon circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.agent-ripple {
+  position: absolute;
+  z-index: 1;
+  width: 74%;
+  height: 74%;
+  border: 1px solid rgba(var(--agent-drop-color), 0.52);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.65) translateZ(0);
+}
+
+.agent-launcher-wrap:hover .agent-ripple:first-of-type,
+.fitsolo-agent.is-rippling .agent-ripple:first-of-type {
+  animation: agentRipple 1.25s var(--agent-ease) infinite;
+}
+
+.agent-launcher-wrap:hover .agent-ripple:nth-of-type(2),
+.fitsolo-agent.is-rippling .agent-ripple:nth-of-type(2) {
+  animation: agentRipple 1.25s 260ms var(--agent-ease) infinite;
+}
+
+.agent-panel {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: calc(var(--agent-drop-size) + 14px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(380px, calc(100vw - 32px));
+  height: min(570px, calc(100svh - 128px));
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 26px;
+  background: rgba(244, 242, 234, 0.93);
+  box-shadow: 0 26px 70px rgba(2, 15, 14, 0.3);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(18px) scale(0.94);
+  transform-origin: 92% 100%;
+  transition:
+    opacity 240ms ease,
+    visibility 240ms,
+    transform 360ms var(--agent-ease);
+  will-change: transform, opacity;
+}
+
+.fitsolo-agent.is-open .agent-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* 水滴拖到屏幕左半区时，让面板向右展开，避免超出视口。 */
+.fitsolo-agent.is-panel-right .agent-panel {
+  right: auto;
+  left: 0;
+  transform-origin: 8% 100%;
+}
+
+/* 水滴靠近屏幕顶部时，让面板显示在水滴下方。 */
+.fitsolo-agent.is-panel-below .agent-panel {
+  top: calc(var(--agent-drop-size) + 14px);
+  bottom: auto;
+}
+
+.fitsolo-agent.is-panel-right.is-panel-below .agent-panel {
+  transform-origin: 8% 0;
+}
+
+.agent-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  padding: 15px 17px;
+  border-bottom: 1px solid rgba(16, 23, 22, 0.1);
+  background: linear-gradient(135deg, rgba(16, 23, 22, 0.98), rgba(20, 47, 42, 0.95));
+  color: white;
+}
+
+.agent-mini-drop {
+  display: grid;
+  flex: 0 0 auto;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  border-radius: 54% 46% 57% 43% / 46% 55% 45% 54%;
+  background: linear-gradient(145deg, rgb(var(--agent-drop-color)), rgb(var(--agent-drop-color-2)));
+  color: var(--agent-ink);
+  box-shadow: inset 4px 5px 9px rgba(255, 255, 255, 0.35);
+  font-weight: 900;
+}
+
+.agent-panel-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.agent-panel-title strong,
+.agent-panel-title span {
+  display: block;
+}
+
+.agent-panel-title strong {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.agent-panel-title span {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 10px;
+}
+
+.agent-close {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  cursor: pointer;
+  font-size: 19px;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.agent-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: rotate(7deg);
+}
+
+.agent-messages {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 11px;
+  overflow-y: auto;
+  padding: 18px 16px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 23, 22, 0.2) transparent;
+}
+
+.agent-message {
+  max-width: 84%;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  animation: agentMessageIn 260ms var(--agent-ease) both;
+}
+
+.agent-message.is-agent {
+  align-self: flex-start;
+  border: 1px solid rgba(16, 23, 22, 0.08);
+  border-bottom-left-radius: 5px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #26312f;
+}
+
+.agent-message.is-user {
+  align-self: flex-end;
+  border-bottom-right-radius: 5px;
+  background: var(--agent-ink);
+  color: white;
+}
+
+.agent-typing {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 11px 14px;
+  border-radius: 16px 16px 16px 5px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.agent-typing i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(16, 23, 22, 0.42);
+  animation: agentTyping 900ms ease-in-out infinite;
+}
+
+.agent-typing i:nth-child(2) { animation-delay: 120ms; }
+.agent-typing i:nth-child(3) { animation-delay: 240ms; }
+
+.agent-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(16, 23, 22, 0.1);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.agent-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 15px;
+  border: 1px solid rgba(16, 23, 22, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--agent-ink);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.agent-input:focus {
+  border-color: rgba(var(--agent-drop-color-2), 0.72);
+  box-shadow: 0 0 0 3px rgba(var(--agent-drop-color-2), 0.12);
+}
+
+.agent-send {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--agent-ink);
+  color: rgb(var(--agent-drop-color));
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.agent-send:hover {
+  background: #24302e;
+  transform: translateY(-1px);
+}
+
+.agent-send:disabled {
+  cursor: wait;
+  opacity: 0.56;
+  transform: none;
+}
+
+@keyframes agentLiquidBreathe {
+  0%, 100% { transform: translateZ(0) scale(1) rotate(0deg); border-radius: 54% 46% 57% 43% / 46% 55% 45% 54%; }
+  35% { transform: translateZ(0) scale(1.035, 0.975) rotate(1.2deg); border-radius: 48% 52% 44% 56% / 53% 46% 54% 47%; }
+  68% { transform: translateZ(0) scale(0.982, 1.028) rotate(-0.8deg); border-radius: 58% 42% 52% 48% / 43% 58% 42% 57%; }
+}
+
+@keyframes agentTouchWobble {
+  0%, 100% { transform: translateZ(0) scale(1); }
+  24% { transform: translateZ(0) scale(1.1, 0.9) rotate(-2deg); }
+  48% { transform: translateZ(0) scale(0.93, 1.08) rotate(1.6deg); }
+  72% { transform: translateZ(0) scale(1.04, 0.97) rotate(-0.7deg); }
+}
+
+@keyframes agentRipple {
+  0% { opacity: 0.52; transform: scale(0.72) translateZ(0); }
+  100% { opacity: 0; transform: scale(1.72) translateZ(0); }
+}
+
+@keyframes agentMessageIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes agentTyping {
+  0%, 65%, 100% { opacity: 0.32; transform: translateY(0); }
+  32% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (max-width: 560px) {
+  .fitsolo-agent {
+    --agent-drop-size: 64px;
+    --agent-edge-x: 16px;
+    --agent-edge-y: 16px;
+  }
+
+  .agent-panel {
+    position: fixed;
+    inset: 12px 12px 88px !important;
+    width: auto;
+    height: auto;
+    transform-origin: center bottom !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-droplet,
+  .agent-ripple,
+  .agent-message,
+  .agent-typing i {
+    animation: none !important;
+  }
+
+  .agent-panel {
+    transition-duration: 0.01ms;
+  }
+}
+

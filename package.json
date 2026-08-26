@@ -1,8 +1,9 @@
 {
   "name": "fitsolo-ai-site",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
-    "build": "node scripts/build-site.mjs"
+    "build": "node scripts/build-site.mjs",
+    "start": "node --env-file=.env.local server.mjs"
   }
 }
