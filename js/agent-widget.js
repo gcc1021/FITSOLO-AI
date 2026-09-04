@@ -12,13 +12,19 @@
    * API 请求格式：POST { message, history, page }
    * API 响应格式：{ reply: '智能体回复内容' }
    */
+  /*
+   * GitHub Pages 只托管静态文件，因此备用站点需要调用独立的安全后端。
+   * API Key 始终保存在服务端环境变量中，绝不能写入这里。
+   */
+  var hostedApiUrl = 'https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site/api/agent/chat';
   var defaults = {
-    apiUrl: '/api/agent/chat',
+    apiUrl: window.location.hostname === 'gcc1021.github.io' ? hostedApiUrl : '/api/agent/chat',
     assistantName: 'FITSOLO Agent',
     welcomeMessage: '你好，我是你的 FITSOLO 智能体。想制定计划、记录训练，还是解决今天的健身问题？',
     storageKey: 'fitsolo-agent-history-v1',
     positionKey: 'fitsolo-agent-position-v1',
-    maxHistory: 30
+    maxHistory: 30,
+    requestTimeout: 45000
   };
   var config = Object.assign({}, defaults, window.FITSOLO_AGENT_CONFIG || {});
 
@@ -277,16 +283,29 @@
      * 每个增量事件格式：data: {"text":"新增内容"}\n\n
      * 完成事件格式：event: done\ndata: {}\n\n
      */
-    var response = await window.fetch(config.apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({
-        message: message,
-        history: history.slice(-12),
-        page: { title: document.title, path: window.location.pathname }
-      })
-    });
+    var controller = new AbortController();
+    var timeoutId = window.setTimeout(function () { controller.abort(); }, config.requestTimeout);
+    var apiUrl = new URL(config.apiUrl, window.location.href);
+    var response;
+    try {
+      response = await window.fetch(apiUrl.href, {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+        credentials: apiUrl.origin === window.location.origin ? 'same-origin' : 'omit',
+        signal: controller.signal,
+        body: JSON.stringify({
+          message: message,
+          history: history.slice(-12),
+          page: { title: document.title, path: window.location.pathname }
+        })
+      });
+    } catch (error) {
+      if (error.name === 'AbortError') throw new Error('智能体响应超时，请稍后重试。');
+      throw new Error('无法连接智能体服务，请检查网络后重试。');
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
     if (!response.ok || !response.body) {
       var errorData = await response.json().catch(function () { return {}; });
       throw new Error(errorData.message || '智能体服务暂时不可用。');
@@ -398,4 +417,3 @@
     }
   });
 })();
-
