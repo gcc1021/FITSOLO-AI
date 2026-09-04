@@ -14,6 +14,7 @@
 - ✅ Phase 3：登录流程优化——双向返回 + 验证码/密码登录 + 协议校验 + OAuth 预留
 - ✅ Phase 4：入口动态化——Canvas 呼吸圆环 + Enter 距离感应 + 游客快捷访问
 - ✅ Phase 5：全站智能体——可拖动透明水滴 Agent + DeepSeek SSE 流式对话
+- ✅ Phase 6：会员体系演示——固定会员账号 + 身份持久化 + 个人中心 + 身份化导航
 
 详细版本改动见 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -42,7 +43,9 @@
 
 **方式二（推荐，体验完整）**：双击 `start-web.bat`，然后浏览器访问 <http://localhost:8000>。
 
-网站访问流程：`index.html` Canvas 动态引导页 ↔ 验证码/密码登录界面 → `home.html` 官网主页 → 各智能体功能页。游客也可从验证码操作行直接进入主页。
+网站访问流程：`index.html` Canvas 动态引导页 ↔ 手机号密码登录界面 → 会员进入 `profile.html` 个人中心 / 游客进入 `home.html` 官网主页 → 各智能体功能页。
+
+演示会员账号为 `13800138000` 至 `13800138009`，密码按需求配置在 `web/js/auth-state.js`。这些账号仅用于前端竞赛演示，不应作为生产环境鉴权方案。
 
 命令行方式：
 
@@ -91,12 +94,14 @@ fitsolo-ai/
 │  ├─ js/                   # 页面交互 + localStorage + 内嵌案例数据
 │  ├─ css/styles.css         # 原官网与智能体功能页样式
 │  ├─ css/auth.css           # 引导页与注册/登录页样式
-│  ├─ js/auth.js             # 页面切换、模式切换与表单校验
+│  ├─ js/auth-state.js       # 演示账号校验与会员/游客身份持久化
+│  ├─ js/auth.js             # 页面切换、手机号密码校验与登录跳转
 │  ├─ js/landing-rings.js    # Canvas 圆环动画与 Enter 距离感应
 │  ├─ js/agent-widget.js     # 全局水滴 Agent、拖动与 SSE 聊天逻辑
 │  ├─ css/agent-widget.css   # 水滴、涟漪和聊天面板样式
-│  ├─ index.html             # 全屏引导页 + 验证码/密码登录入口
+│  ├─ index.html             # 全屏引导页 + 手机号密码/游客登录入口
 │  ├─ home.html              # 官网主页（故事五幕 + 三智能体 + 案例）
+│  ├─ profile.html           # 会员个人中心（身份 + 训练数据概览）
 │  ├─ legal.html             # 用户协议与隐私政策占位页
 │  ├─ oauth-callback.html    # 第三方 OAuth 回调占位页
 │  └─ planner.html / checker.html / coach.html / replay.html

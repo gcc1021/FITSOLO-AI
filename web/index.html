@@ -17,7 +17,7 @@
   <meta name="twitter:image" content="https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site/og.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23d7ff45'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%23101716' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://images.unsplash.com">
-  <link rel="stylesheet" href="css/auth.css?v=0.5.0">
+  <link rel="stylesheet" href="css/auth.css?v=0.7.0">
   <link rel="stylesheet" href="css/agent-widget.css?v=0.6.2">
 </head>
 <body>
@@ -52,39 +52,20 @@
           <section class="login-panel">
             <div class="login-heading">
               <p class="step-label">01 / SIGN IN</p>
-              <h2 id="loginModeTitle">手机号验证码登录</h2>
-              <p id="loginModeDescription">无需记住密码，验证手机号即可安全登录。</p>
+              <h2 id="loginModeTitle">手机号密码登录</h2>
+              <p id="loginModeDescription">使用演示会员账号登录，继续你的专属训练计划。</p>
             </div>
 
             <form id="authForm" novalidate>
-              <div class="auth-mode-stack" id="authModeStack">
-                <div class="mode-panel is-active" id="codeLoginPanel" data-mode="code">
-                  <div class="field">
-                    <label for="codeTelephone">手机号</label>
-                    <input id="codeTelephone" name="codeTelephone" type="tel" autocomplete="tel" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" required>
-                  </div>
-
-                  <div class="field">
-                    <label for="verificationCode">验证码</label>
-                    <div class="code-input-row">
-                      <input id="verificationCode" name="verificationCode" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6" placeholder="请输入 6 位验证码" required>
-                      <button class="code-button" id="getCodeButton" type="button">获取验证码</button>
-                      <!-- 游客入口与验证码操作并排，避免占用表单底部空间 -->
-                      <button class="guest-code-button" id="guestLoginButton" type="button">游客访问</button>
-                    </div>
-                  </div>
+              <div class="login-fields">
+                <div class="field">
+                  <label for="telephone">手机号</label>
+                  <input id="telephone" name="telephone" type="tel" autocomplete="username" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" required>
                 </div>
 
-                <div class="mode-panel" id="passwordLoginPanel" data-mode="password" aria-hidden="true" inert>
-                  <div class="field">
-                    <label for="account">手机号 / 账号</label>
-                    <input id="account" name="account" type="text" autocomplete="username" placeholder="请输入手机号或账号">
-                  </div>
-
-                  <div class="field">
-                    <label for="password">密码</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="请输入密码">
-                  </div>
+                <div class="field">
+                  <label for="password">密码</label>
+                  <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="6" inputmode="numeric" placeholder="请输入 6 位密码" required>
                 </div>
               </div>
 
@@ -106,12 +87,12 @@
                   <span aria-hidden="true">→</span>
                 </button>
               </div>
-            </form>
 
-            <p class="account-switch">
-              <span id="switchPrompt">也可以使用密码登录</span>
-              <button class="text-button" id="modeSwitch" type="button" aria-controls="authModeStack" aria-pressed="false">账号密码登录</button>
-            </p>
+              <button class="guest-login-button" id="guestLoginButton" type="button">
+                <span>游客登录</span>
+                <span aria-hidden="true">无需账号 →</span>
+              </button>
+            </form>
 
             <div class="divider"><span>其他登录方式</span></div>
 
@@ -152,7 +133,8 @@
   </main>
 
   <script src="js/landing-rings.js?v=0.5.0"></script>
-  <script src="js/auth.js?v=0.5.0"></script>
+  <script src="js/auth-state.js?v=0.7.0"></script>
+  <script src="js/auth.js?v=0.7.0"></script>
   <script src="js/agent-widget.js?v=0.6.2"></script>
 </body>
 </html>
