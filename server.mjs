@@ -8,6 +8,10 @@ const deepSeekBaseUrl = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.c
 const deepSeekModel = process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash';
 const deepSeekApiKey = process.env.DEEPSEEK_API_KEY || '';
 const mockMode = process.env.DEEPSEEK_MOCK === '1';
+const allowedOrigins = new Set(String(process.env.ALLOWED_ORIGINS || [
+  'https://gcc1021.github.io',
+  'https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site'
+].join(',')).split(',').map((origin) => origin.trim()).filter(Boolean));
 const systemPrompt = '你是一个网站的智能客服，请用热情、简短的语气回答问题。';
 
 const mimeTypes = {
@@ -167,6 +171,24 @@ function serveStatic(request, response) {
 
 createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
+  const origin = request.headers.origin;
+  if (origin && allowedOrigins.has(origin)) {
+    response.setHeader('Access-Control-Allow-Origin', origin);
+    response.setHeader('Vary', 'Origin');
+  }
+  if (pathname === '/api/agent/chat' && origin && !allowedOrigins.has(origin)) {
+    sendJson(response, 403, { message: '该来源不允许访问智能体接口。' });
+    return;
+  }
+  if (request.method === 'OPTIONS' && pathname === '/api/agent/chat') {
+    response.writeHead(204, {
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400'
+    });
+    response.end();
+    return;
+  }
   if (request.method === 'POST' && pathname === '/api/agent/chat') {
     handleAgentChat(request, response);
     return;
@@ -176,8 +198,7 @@ createServer((request, response) => {
     return;
   }
   sendJson(response, 405, { message: 'Method not allowed' });
-}).listen(port, '127.0.0.1', () => {
+}).listen(port, process.env.HOST || '0.0.0.0', () => {
   console.log(`FITSOLO Agent preview: http://127.0.0.1:${port}`);
   console.log(mockMode ? 'DeepSeek mode: mock SSE' : 'DeepSeek mode: live API');
 });
-

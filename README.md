@@ -61,6 +61,7 @@ python -m http.server 8000 --directory web
 DEEPSEEK_API_KEY=your_key_here
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-v4-flash
+ALLOWED_ORIGINS=https://gcc1021.github.io,https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site
 PORT=4176
 ```
 
@@ -101,12 +102,15 @@ fitsolo-ai/
 │  └─ planner.html / checker.html / coach.html / replay.html
 ├─ start-web.bat            # 一键启动静态预览
 ├─ server.mjs               # 静态网站 + DeepSeek SSE 后端代理
+├─ worker/index.js          # 托管环境使用的 DeepSeek SSE 安全代理
 └─ .env.example             # 无密钥环境变量模板
 ```
 
 ## 技术说明
 
-- **零依赖静态站**：纯 HTML/CSS/JS，双击即运行，可直接托管 GitHub Pages / Vercel / 任意静态空间。
+- **零依赖前端**：页面为纯 HTML/CSS/JS，可直接托管 GitHub Pages / Vercel / 任意静态空间。
+- **安全 AI 代理**：DeepSeek 对话必须经过 `server.mjs` 或 `worker/index.js`，API Key 只保存在服务端，不能写入 GitHub Pages 前端。
+- **备用网址**：`https://gcc1021.github.io/FITSOLO-AI/` 会自动调用正式托管后端的智能体接口，并通过来源白名单限制跨域访问。
 - **可复现设计**：三个智能体是"规则优先、AI 辅助、输出强约束"——同一输入产出同一方案（`agent-test.js` 可验证）。
 - **数据流**：`data/cases/*.json` → `web/js/cases-data.js`（用 `node docs/tools/build-cases-data.js` 重新生成）。
 - **后续迁移**：agents 为纯 JS 模块，可平滑迁入 Next.js；`coach-core.js` 预留 LLM 钩子，配置 API Key 后回答更灵活。
@@ -142,7 +146,7 @@ node docs/tools/agent-test.js
 > git commit -m "merge: 整合 GitHub 初始提交"
 > git push -u origin main
 > ```
-4. 开启 GitHub Pages（Settings → Pages → 选择 `main` 分支 + `/docs` 或根目录），即可得到公开访问链接；也可以把 `web/` 单独部署到 Vercel。
+4. GitHub Pages 使用 `gh-pages` 分支发布 `web/` 目录内容；智能体后端需单独部署并配置 `DEEPSEEK_API_KEY`。
 
 > ⚠️本仓库所有案例均为**模拟脱敏样例**。
 
