@@ -2,6 +2,22 @@
   'use strict';
 
   /*
+   * GitHub Pages is kept as a public alias only. The AI endpoint lives on the
+   * hosted site, so move visitors there before starting the widget. This makes
+   * the chat request same-origin and avoids browsers/extensions blocking the
+   * cross-site streaming request.
+   */
+  var hostedOrigin = 'https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site';
+  if (window.location.hostname === 'gcc1021.github.io') {
+    var githubProjectPrefix = '/FITSOLO-AI';
+    var hostedPath = window.location.pathname.indexOf(githubProjectPrefix) === 0
+      ? window.location.pathname.slice(githubProjectPrefix.length)
+      : window.location.pathname;
+    window.location.replace(hostedOrigin + (hostedPath || '/') + window.location.search + window.location.hash);
+    return;
+  }
+
+  /*
    * 可在加载本文件前覆盖以下配置：
    * window.FITSOLO_AGENT_CONFIG = {
    *   apiUrl: '/api/agent/chat', // 后端 SSE 代理接口
@@ -16,7 +32,7 @@
    * GitHub Pages 只托管静态文件，因此备用站点需要调用独立的安全后端。
    * API Key 始终保存在服务端环境变量中，绝不能写入这里。
    */
-  var hostedApiUrl = 'https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site/api/agent/chat';
+  var hostedApiUrl = hostedOrigin + '/api/agent/chat';
   var defaults = {
     apiUrl: window.location.hostname === 'gcc1021.github.io' ? hostedApiUrl : '/api/agent/chat',
     assistantName: 'FITSOLO Agent',
