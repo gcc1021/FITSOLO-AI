@@ -104,7 +104,7 @@
   form.addEventListener('input', clearValidation);
   agreement.addEventListener('change', clearValidation);
 
-  form.addEventListener('submit', function (event) {
+  form.addEventListener('submit', async function (event) {
     event.preventDefault();
     clearValidation();
     if (!agreement.checked) {
@@ -119,12 +119,16 @@
       showError(password, '请输入 6 位数字密码。');
       return;
     }
-    var identity = authState.authenticate(telephone.value.trim(), password.value);
-    if (!identity) {
-      showCredentialError('手机号或密码不匹配，请检查演示账号后重试。');
-      return;
+    submitButton.disabled = true;
+    primaryActionText.textContent = '正在验证…';
+    try {
+      var identity = await authState.authenticate(telephone.value.trim(), password.value);
+      finishLogin(identity, 'profile.html');
+    } catch (error) {
+      submitButton.disabled = false;
+      primaryActionText.textContent = '登录并进入';
+      showCredentialError(error.message || '登录失败，请稍后重试。');
     }
-    finishLogin(identity, 'profile.html');
   });
 
   guestLoginButton.addEventListener('click', function () {

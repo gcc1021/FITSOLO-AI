@@ -45,7 +45,7 @@
       + '</div></div>'
       + '<p class="disclaimer">免责声明：本平台 AI 方案仅供参考，不构成医疗诊断或治疗建议，结果因人而异；如有疾病请遵医嘱。'
       + '演示数据为模拟脱敏样例，非真实学员。</p>'
-      + '<p class="muted small">© 2026 FITSOLO · v0.7 Demo</p>'
+      + '<p class="muted small">© 2026 FITSOLO · v0.8 Demo</p>'
       + '</div></footer>';
   }
 

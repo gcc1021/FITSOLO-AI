@@ -7,7 +7,7 @@
 <title>个人中心 — FITSOLO 智能私教</title>
 <meta name="description" content="查看 FITSOLO 会员身份、健身档案、训练方案与打卡进度。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c8f542'/%3E%3Ctext x='50' y='68' font-size='58' font-weight='900' text-anchor='middle' fill='%230a0e14' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/styles.css?v=0.7.0">
+<link rel="stylesheet" href="css/styles.css?v=0.8.0">
 <link rel="stylesheet" href="css/agent-widget.css?v=0.6.2">
 </head>
 <body>
@@ -48,29 +48,96 @@
       <button class="btn btn-danger btn-block" id="logoutButton" type="button">退出当前账号</button>
     </section>
 
-    <section class="card profile-card" aria-labelledby="overviewTitle">
+    <section class="card profile-card profile-overview-card" aria-labelledby="overviewTitle">
       <div class="profile-card-head">
         <div>
           <span class="profile-eyebrow">TRAINING OVERVIEW</span>
           <h2 id="overviewTitle">训练概览</h2>
         </div>
+        <button class="btn btn-primary btn-sm" id="openCheckInButton" type="button">今日打卡</button>
       </div>
 
       <div class="profile-metrics">
         <div class="profile-metric"><b id="goalValue">未设置</b><span>当前目标</span></div>
         <div class="profile-metric"><b id="planValue">未生成</b><span>训练方案</span></div>
         <div class="profile-metric"><b id="checkinValue">0 天</b><span>累计打卡</span></div>
+        <div class="profile-metric"><b id="streakValue">0 天</b><span>连续打卡</span></div>
       </div>
 
-      <div class="profile-next-step">
-        <span class="profile-next-icon" aria-hidden="true">→</span>
-        <div>
-          <strong id="nextStepTitle">从免费体测开始</strong>
-          <p id="nextStepDescription">完善身体数据，让方案智能体为你生成第一份计划。</p>
+      <section class="checkin-calendar" aria-labelledby="calendarTitle">
+        <div class="calendar-toolbar">
+          <div>
+            <span class="profile-eyebrow">CHECK-IN CALENDAR</span>
+            <h3 id="calendarTitle">打卡日历</h3>
+          </div>
+          <div class="calendar-controls">
+            <button id="calendarPrev" type="button" aria-label="上一个月">←</button>
+            <strong id="calendarMonth">—</strong>
+            <button id="calendarNext" type="button" aria-label="下一个月">→</button>
+          </div>
         </div>
-      </div>
+        <div class="calendar-weekdays" aria-hidden="true">
+          <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+        </div>
+        <div class="calendar-days" id="calendarDays" aria-live="polite"></div>
+      </section>
+
+      <p class="checkin-status" id="checkInStatus" role="status" aria-live="polite">正在读取打卡记录…</p>
+
+      <section class="recent-checkins" aria-labelledby="recentTitle">
+        <div class="recent-checkins-head">
+          <h3 id="recentTitle">近期打卡记录</h3>
+          <span id="recordCount">0 条</span>
+        </div>
+        <div class="checkin-timeline" id="checkInTimeline">
+          <p class="muted small">正在加载…</p>
+        </div>
+      </section>
     </section>
   </div>
+
+  <dialog class="checkin-dialog" id="checkInDialog" aria-labelledby="checkInDialogTitle">
+    <form class="checkin-form" id="checkInForm">
+      <div class="checkin-dialog-head">
+        <div>
+          <span class="profile-eyebrow">DAILY CHECK-IN</span>
+          <h2 id="checkInDialogTitle">今日打卡</h2>
+          <p>记录今天的训练，数据将保存到你的会员账号。</p>
+        </div>
+        <button class="dialog-close" id="closeCheckInButton" type="button" aria-label="关闭打卡表单">×</button>
+      </div>
+
+      <div class="field">
+        <label for="trainingType">训练类型</label>
+        <select id="trainingType" name="trainingType" required>
+          <option value="">请选择训练类型</option>
+          <option value="力量训练">力量训练</option>
+          <option value="有氧训练">有氧训练</option>
+          <option value="HIIT">HIIT</option>
+          <option value="瑜伽拉伸">瑜伽拉伸</option>
+          <option value="功能训练">功能训练</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="durationMinutes">训练时长（分钟）</label>
+        <input id="durationMinutes" name="durationMinutes" type="number" min="1" max="600" step="1" inputmode="numeric" placeholder="例如：45" required>
+      </div>
+
+      <div class="field">
+        <label for="checkInNote">打卡备注</label>
+        <textarea id="checkInNote" name="note" maxlength="500" placeholder="记录今天的状态、感受或完成情况（选填）"></textarea>
+        <span class="hint">最多 500 字</span>
+      </div>
+
+      <p class="checkin-form-message" id="checkInFormMessage" role="alert"></p>
+      <div class="checkin-form-actions">
+        <button class="btn btn-ghost" id="cancelCheckInButton" type="button">取消</button>
+        <button class="btn btn-primary" id="submitCheckInButton" type="submit">保存打卡</button>
+      </div>
+    </form>
+  </dialog>
 
   <div class="container profile-quick-section">
     <div class="section-head">
@@ -101,9 +168,9 @@
 <div id="site-footer"></div>
 
 <script src="js/store.js"></script>
-<script src="js/auth-state.js?v=0.7.0"></script>
-<script src="js/nav.js?v=0.7.0"></script>
-<script src="js/profile.js?v=0.7.0"></script>
+<script src="js/auth-state.js?v=0.8.0"></script>
+<script src="js/nav.js?v=0.8.0"></script>
+<script src="js/profile.js?v=0.8.0"></script>
 <script src="js/agent-widget.js?v=0.6.2"></script>
 </body>
 </html>

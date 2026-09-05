@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>用户协议与隐私政策 — FITSOLO</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=0.8.0">
   <link rel="stylesheet" href="css/agent-widget.css?v=0.6.2">
 </head>
 <body>
@@ -29,7 +29,7 @@
       <article class="card" id="privacy">
         <span class="tag">PRIVACY</span>
         <h2 style="margin: 8px 0 14px;">隐私政策</h2>
-        <p>FITSOLO 遵循最小必要原则处理账号与健康相关信息。本原型仅在浏览器本地保存演示数据，不会保存密码、短信验证码或将其上传到服务器。</p>
+        <p>FITSOLO 遵循最小必要原则处理账号与训练信息。会员登录后提交的打卡日期、训练类型、训练时长和备注会按会员编号保存到云端数据库，用于展示个人打卡日历与统计；密码只用于服务端校验，不写入打卡数据库。训练备注请勿填写身份证号、病历、联系方式等不必要的敏感信息。</p>
       </article>
 
       <div style="margin-top: 24px;">
@@ -39,7 +39,8 @@
   </main>
 
   <div id="site-footer"></div>
-  <script src="js/nav.js"></script>
+  <script src="js/auth-state.js?v=0.8.0"></script>
+  <script src="js/nav.js?v=0.8.0"></script>
   <script src="js/agent-widget.js?v=0.6.2"></script>
 </body>
 </html>
