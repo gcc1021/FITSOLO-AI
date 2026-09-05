@@ -15,6 +15,7 @@
 - ✅ Phase 4：入口动态化——Canvas 呼吸圆环 + Enter 距离感应 + 游客快捷访问
 - ✅ Phase 5：全站智能体——可拖动透明水滴 Agent + DeepSeek SSE 流式对话
 - ✅ Phase 6：会员体系演示——固定会员账号 + 身份持久化 + 个人中心 + 身份化导航
+- ✅ Phase 7：会员打卡持久化——D1 数据库 + 真实打卡 API + 日历统计 + 历史时间轴
 
 详细版本改动见 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -45,7 +46,7 @@
 
 网站访问流程：`index.html` Canvas 动态引导页 ↔ 手机号密码登录界面 → 会员进入 `profile.html` 个人中心 / 游客进入 `home.html` 官网主页 → 各智能体功能页。
 
-演示会员账号为 `13800138000` 至 `13800138009`，密码按需求配置在 `web/js/auth-state.js`。这些账号仅用于前端竞赛演示，不应作为生产环境鉴权方案。
+演示会员账号为 `13800138000` 至 `13800138009`，密码仅在服务端 `worker/index.js` 与本地预览服务中校验，不再发送到前端代码。账号仍用于竞赛演示，不应作为正式用户体系。
 
 命令行方式：
 
@@ -54,7 +55,7 @@ python -m http.server 8000 --directory web
 # 浏览器打开 http://localhost:8000
 ```
 
-> 数据保存在浏览器 localStorage（仅本机），不上传任何服务器。
+> 训练档案和方案目前保存在浏览器 localStorage；会员个人中心打卡记录通过 API 保存到数据库，并按会员账号隔离。
 
 ### 启用 DeepSeek 智能体
 
@@ -64,6 +65,7 @@ python -m http.server 8000 --directory web
 DEEPSEEK_API_KEY=your_key_here
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-v4-flash
+FITSOLO_SESSION_SECRET=replace_with_a_random_secret_at_least_24_characters
 ALLOWED_ORIGINS=https://gcc1021.github.io,https://fitsolo-ai-gcc1021.fuzzy-shrew-9655.chatgpt.site
 PORT=4176
 ```
@@ -107,7 +109,9 @@ fitsolo-ai/
 │  └─ planner.html / checker.html / coach.html / replay.html
 ├─ start-web.bat            # 一键启动静态预览
 ├─ server.mjs               # 静态网站 + DeepSeek SSE 后端代理
-├─ worker/index.js          # 托管环境使用的 DeepSeek SSE 安全代理
+├─ db/schema.ts             # check_in_records 数据结构说明
+├─ drizzle/                 # D1 数据库 SQL 迁移
+├─ worker/index.js          # DeepSeek、登录与 D1 打卡 API
 └─ .env.example             # 无密钥环境变量模板
 ```
 
@@ -117,6 +121,7 @@ fitsolo-ai/
 - **安全 AI 代理**：DeepSeek 对话必须经过 `server.mjs` 或 `worker/index.js`，API Key 只保存在服务端，不能写入 GitHub Pages 前端。
 - **备用网址**：`https://gcc1021.github.io/FITSOLO-AI/` 会自动调用正式托管后端的智能体接口，并通过来源白名单限制跨域访问。
 - **可复现设计**：三个智能体是"规则优先、AI 辅助、输出强约束"——同一输入产出同一方案（`agent-test.js` 可验证）。
+- **打卡持久化**：正式站使用 D1 的 `check_in_records` 表；本地预览使用被 Git 忽略的 `data/fitsolo.db` SQLite 文件。
 - **数据流**：`data/cases/*.json` → `web/js/cases-data.js`（用 `node docs/tools/build-cases-data.js` 重新生成）。
 - **后续迁移**：agents 为纯 JS 模块，可平滑迁入 Next.js；`coach-core.js` 预留 LLM 钩子，配置 API Key 后回答更灵活。
 
@@ -124,9 +129,12 @@ fitsolo-ai/
 
 ```bash
 node docs/tools/agent-test.js
+node docs/tools/checkin-api-test.mjs
 ```
 
-覆盖：Planner 三场景（减脂/增肌/塑形）、Checker 连续打卡/里程碑/周报、Coach 平台期信号检测与 FAQ 答疑。
+覆盖：Planner 三场景（减脂/增肌/塑形）、Checker 连续打卡/里程碑/周报、Coach 平台期信号检测与 FAQ 答疑，以及会员登录、打卡新增/更新、历史查询、账号隔离与未授权访问拦截。
+
+> 当前 10 组账号为共享的竞赛演示账号。请勿在打卡备注中填写身份证号、病历等敏感信息；正式运营前应接入独立用户注册、密码哈希与找回流程。
 
 ## 上传 GitHub
 

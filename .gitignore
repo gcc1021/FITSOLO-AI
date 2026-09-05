@@ -10,6 +10,9 @@ node_modules/
 # 环境变量（绝不上传密钥）
 .env
 .env.local
+data/fitsolo.db
+data/fitsolo.db-shm
+data/fitsolo.db-wal
 .env.*.local
 
 # 临时目录
